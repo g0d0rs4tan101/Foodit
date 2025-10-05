@@ -1,0 +1,16 @@
+{
+  "name": "foodit",
+  "version": "1.0.0",
+  "description": "Foodit signup backend",
+  "main": "api/signup.js",
+  "scripts": {
+    "start": "vercel dev"
+  },
+  "dependencies": {
+    "mongoose": "^6.10.0",
+    "bcrypt": "^5.1.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
