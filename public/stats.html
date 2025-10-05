@@ -1,1 +1,40 @@
-<h1>e</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Stats | Foodit</title>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://i.postimg.cc/cC5JjcNj/blook-background-2.png');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    h1 {
+      font-family: 'Titan One', cursive;
+      font-size: 36px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    p {
+      font-size: 18px;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Titan+One&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div>
+    <h1>Welcome to Foodit Stats</h1>
+    <p>User: <span id="username"></span></p>
+    <script>
+      document.getElementById('username').textContent = localStorage.getItem('fooditCurrentUser') || 'Unknown';
+    </script>
+  </div>
+</body>
+</html>
