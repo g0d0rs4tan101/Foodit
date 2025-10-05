@@ -71,7 +71,7 @@ module.exports = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error('Signup error:', error);
+    console.error('Signup error:', err);
     res.status(500).json({ error: 'Server error. Please try again later.' });
   }
 };
