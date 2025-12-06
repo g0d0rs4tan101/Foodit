@@ -102,7 +102,7 @@
 
         localStorage.setItem("fooditCurrentUser", username);
         show("Success! Logging in...", "success");
-        setTimeout(() => location.href = "dashboard.html", 1000);
+        setTimeout(() => location.href = "stats.html", 1000);
       } catch (e) {
         show("Error: " + e.message, "error");
       }
