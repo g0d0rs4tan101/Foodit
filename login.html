@@ -5,10 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login • Foodit</title>
   <link href="https://fonts.googleapis.com/css2?family=Titan+One&display=swap" rel="stylesheet"/>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
   <style>
+    /* Copy the full <style> block from signup.html above */
     :root { --orange:#ff6a00; --light:#fff8f0; --text:#ffeacc; }
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:'Titan One',cursive; background:var(--light); min-height:100vh; display:flex; flex-wrap:wrap; }
@@ -19,7 +17,7 @@
     input { width:100%; padding:16px 20px; margin:12px 0; border:none; border-radius:16px; font-size:18px; background:white; }
     button { width:100%; padding:18px; margin-top:20px; background:#ff4e00; color:white; border:none; border-radius:18px; font-size:22px; cursor:pointer; box-shadow:0 8px 0 #c43e00; transition:0.25s; }
     button:hover { background:#ff6b1a; transform:translateY(4px); box-shadow:0 4px 0 #b33a00; }
-    .error { background:white; color:#ff4e00; padding:14px; border-radius:12px; margin:15px 0; text-align:center; }
+    .error { background:white; color:#ff4e00; padding:14px; border-radius:12px; margin:15px 0; text-align:center; display:none; }
     .links { text-align:center; margin-top:24px; color:var(--text); }
     .links a { color:white; text-decoration:underline; font-weight:bold; }
     .right { width:50%; background:linear-gradient(135deg,#ffb84d,#ff9a00); display:flex; align-items:center; justify-content:center; padding:40px; }
@@ -33,16 +31,16 @@
 <body>
   <div class="container">
     <div class="left">
-      <h1>Welcome Back!</h1>
-      <p>Log in and start munching.</p>
+      <h1>Foodit Login</h1>
+      <p>Welcome back!</p>
       <div class="form-box">
-        <div id="error" class="error" style="display:none;"></div>
+        <div id="error" class="error"></div>
         <input type="text" id="username" placeholder="Username" required />
         <input type="password" id="password" placeholder="Password" required />
         <button onclick="login()">Log In</button>
         <div class="links">
           No account? <a href="signup.html">Sign up</a><br>
-          <a href="index.html">Back to home</a>
+          <a href="index.html">Back home</a>
         </div>
       </div>
     </div>
@@ -60,49 +58,49 @@
     </div>
   </div>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
     const firebaseConfig = {
       apiKey: "AIzaSyCVJcIFnKgG75EpTmbIvg-zeypVbU03I3g",
       authDomain: "foodit-chat.firebaseapp.com",
+      databaseURL: "https://foodit-chat-default-rtdb.firebaseio.com",
       projectId: "foodit-chat",
       storageBucket: "foodit-chat.appspot.com",
       messagingSenderId: "798551611055",
       appId: "1:798551611055:web:c896f152ae356d2b39665a"
     };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
 
-    function login() {
-      const username = document.getElementById("username").value.trim().toLowerCase();
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    window.login = async function() {
+      const username = document.getElementById("username").value.trim();
       const password = document.getElementById("password").value;
       const error = document.getElementById("error");
 
-      if (!username || !password) return showError("Fill in both fields");
+      if (!username || !password) return showError("Fill in all fields");
 
-      db.collection("users").where("username", "==", username).get()
-        .then(snap => {
-          if (snap.empty) return showError("Username not found");
-          const user = snap.docs[0].data();
-          if (user.password === password) {
-            localStorage.setItem("foodit_user", JSON.stringify({
-              username: user.displayName,
-              uid: snap.docs[0].id
-            }));
-            location.href = "dashboard.html";
-          } else {
-            showError("Wrong password");
-          }
-        })
-        .catch(() => showError("Network error"));
-    }
+      try {
+        const snap = await get(child(ref(db), `users/${username}`));
+        if (!snap.exists()) return showError("User not found");
+        if (snap.val().password === password) {
+          localStorage.setItem("fooditCurrentUser", username);
+          location.href = "dashboard.html";
+        } else {
+          showError("Wrong password");
+        }
+      } catch (e) {
+        showError("Error: " + e.message);
+      }
+    };
 
     function showError(msg) {
-      const error = document.getElementById("error");
-      error.textContent = msg;
-      error.style.display = "block";
+      const e = document.getElementById("error");
+      e.textContent = msg;
+      e.style.display = "block";
     }
-
-    document.addEventListener("keypress", e => e.key === "Enter" && login());
   </script>
 </body>
 </html>
