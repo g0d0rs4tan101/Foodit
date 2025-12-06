@@ -1,27 +1,103 @@
-<!-- Same design as register.html, just change: -->
-<h1>Foodit Login</h1>
-<p>Welcome back!</p>
-<button onclick="login()">Log In</button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login • Foodit</title>
+  <link href="https://fonts.googleapis.com/css2?family=Titan+One&display=swap" rel="stylesheet"/>
+  <style>
+    :root { --orange:#ff6a00; --light:#fff8f0; --text:#ffeacc; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Titan One',cursive; background:var(--light); min-height:100vh; display:flex; flex-wrap:wrap; }
+    .container { display:flex; flex-wrap:wrap; width:100%; min-height:100vh; }
+    .left { width:50%; padding:80px 70px; background:linear-gradient(135deg,#ff7f11,#ffae00); color:white; display:flex; flex-direction:column; justify-content:center; }
+    .left h1 { font-size:78px; line-height:0.95; text-shadow:4px 4px 0 rgba(0,0,0,0.2); margin:0 0 16px 0; }
+    .left p { font-size:20px; margin:32px 0 48px; color:var(--text); max-width:540px; }
+    .form-box { background:rgba(255,255,255,0.18); backdrop-filter:blur(12px); padding:40px; border-radius:24px; box-shadow:0 15px 35px rgba(0,0,0,0.2); max-width:420px; width:100%; }
+    input { width:100%; padding:16px 20px; margin:12px 0; border:none; border-radius:16px; font-size:18px; background:white; color:#333; }
+    input:focus { outline:none; transform:scale(1.02); box-shadow:0 0 0 4px rgba(255,255,255,0.4); }
+    button { width:100%; padding:18px; margin-top:20px; background:#ff4e00; color:white; border:none; border-radius:18px; font-size:22px; cursor:pointer; box-shadow:0 8px 0 #c43e00; transition:0.25s; position:relative; top:0; }
+    button:hover { background:#ff6b1a; top:4px; box-shadow:0 4px 0 #b33a00; }
+    .msg { padding:14px; border-radius:12px; margin:15px 0 0; text-align:center; font-size:17px; display:none; }
+    .error { background:white; color:#ff4e00; }
+    .links { text-align:center; margin-top:24px; color:var(--text); font-size:15px; }
+    .links a { color:white; text-decoration:underline; font-weight:bold; }
+    .right { width:50%; background:linear-gradient(135deg,#ffb84d,#ff9a00); display:flex; align-items:center; justify-content:center; padding:40px; }
+    .icons-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:36px; max-width:600px; }
+    .icon { width:110px; height:110px; background:white; border-radius:28px; overflow:hidden; box-shadow:0 12px 30px rgba(0,0,0,0.2); animation:float 6s ease-in-out infinite; transition:0.3s; }
+    .icon:hover { transform:translateY(-20px) scale(1.15) rotate(6deg); }
+    .icon img { width:100%; height:100%; object-fit:contain; padding:14px; }
+    @keyframes float { 0%,100% {transform:translateY(0)} 50% {transform:translateY(-16px) rotate(3deg)} }
+    @media (max-width:1024px) {.left,.right{width:100%;padding:60px 50px} .icons-grid{grid-template-columns:repeat(3,1fr)}}
+    @ strumedia (max-width:640px) {.left h1{font-size:60px} .form-box{padding:30px}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="left">
+      <h1>Foodit Login</h1>
+      <p>Welcome back, food fighter!</p>
+      <div class="form-box">
+        <div id="msg" class="msg error"></div>
+        <input type="text" id="username" placeholder="Username" maxlength="20" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <button onclick="login()">Log In</button>
+        <div class="links">
+          No account? <a href="register.html">Register here</a><br>
+          <a href="index.html">Back to home</a>
+        </div>
+      </div>
+      <div style="margin-top:auto;padding-top:80px;font-size:14px;color:var(--text);opacity:0.8;">
+        Foodit © 2025 • Not affiliated with Blooket
+      </div>
+    </div>
+    <div class="right">
+      <div class="icons-grid">
+        <div class="icon"><img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Fthumbnails_Strawberry%20Milk.png?1750440367893" loading="lazy"></div>
+        <div class="icon"><img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Fthumbnails_Warriet%20Milk.png?1750440415086" loading="lazy"></div>
+        <div class="icon"><img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Fmoon.png?1750451519920" loading="lazy"></div>
+        <div class="icon"><img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Fastronaut.png?1750451907761" loading="lazy"></div>
+        <div class="icon"><img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Fdonut.png" loading="lazy"></div>
+        <div class="icon"><img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Ficecream.png" loading="lazy"></div>
+        <div class="icon"><img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Fsandwich.png" loading="lazy"></div>
+        <div class="icon"><img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Ftaco.png" loading="lazy"></div>
+      </div>
+    </div>
+  </div>
 
-<script>
-  const users = JSON.parse(localStorage.getItem("foodit_users") || "{}");
+  <script>
+    const users = JSON.parse(localStorage.getItem("foodit_users") || "{}");
 
-  function login() {
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value;
-    const msg = document.getElementById("msg");
+    async function login() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
+      const msg = document.getElementById("msg");
 
-    if (!username || !password) return show("Fill all fields", "error");
-    if (users[username] !== password) return show("Wrong username/password", "error");
+      if (!username || !password) {
+        show("Fill in all fields", "error");
+        return;
+      }
 
-    localStorage.setItem("foodit_user", username);
-    location.href = "dashboard.html";
-  }
+      if (users[username] && users[username] === password) {
+        localStorage.setItem("foodit_user", username);
+        show("Logging in...", "success");
+        setTimeout(() => location.href = "dashboard.html", 800);
+      } else {
+        show("Wrong username or password", "error");
+      }
+    }
 
-  function show(text, type) {
-    const m = document.getElementById("msg");
-    m.textContent = text;
-    m.className = "msg " + type;
-    m.style.display = "block";
-  }
-</script>
+    function show(text, type) {
+      const m = document.getElementById("msg");
+      m.textContent = text;
+      m.className = "msg " + type;
+      m.style.display = "block";
+    }
+
+    // Allow pressing Enter
+    document.addEventListener("keypress", e => {
+      if (e.key === "Enter") login();
+    });
+  </script>
+</body>
+</html>
