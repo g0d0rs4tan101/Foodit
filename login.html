@@ -87,7 +87,7 @@
         if (!snap.exists()) return showError("User not found");
         if (snap.val().password === password) {
           localStorage.setItem("fooditCurrentUser", username);
-          location.href = "dashboard.html";
+          location.href = "stats.html";
         } else {
           showError("Wrong password");
         }
