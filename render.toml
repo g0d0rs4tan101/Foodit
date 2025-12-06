@@ -1,9 +1,0 @@
-services:
-  - type: static
-    name: foodit
-    buildCommand: ""
-    staticPublishPath: .
-    routes:
-      - type: rewrite
-        source: /api/*
-        destination: https://foodit-login.deno.dev/:splat
