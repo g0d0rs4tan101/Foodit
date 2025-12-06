@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up • Foodit</title>
+  <link href="https://fonts.googleapis.com/css2?family=Titan+One&display=swap" rel="stylesheet"/>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+  <style>
+    :root { --orange:#ff6a00; --light:#fff8f0; --text:#ffeacc; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Titan One',cursive; background:var(--light); min-height:100vh; display:flex; flex-wrap:wrap; }
+    .container { display:flex; flex-wrap:wrap; width:100%; min-height:100vh; }
+    .left { width:50%; padding:80px 70px; background:linear-gradient(135deg,#ff7f11,#ffae00); color:white; display:flex; flex-direction:column; justify-content:center; }
+    .left h1 { font-size:78px; line-height:0.95; text-shadow:4px 4px 0 rgba(0,0,0,0.2); }
+    .form-box { background:rgba(255,255,255,0.18); backdrop-filter:blur(12px); padding:40px; border-radius:24px; box-shadow:0 15px 35px rgba(0,0,0,0.2); max-width:420px; }
+    input { width:100%; padding:16px 20px; margin:12px 0; border:none; border-radius:16px; font-size:18px; background:white; }
+    button { width:100%; padding:18px; margin-top:20px; background:#ff4e00; color:white; border:none; border-radius:18px; font-size:22px; cursor:pointer; box-shadow:0 8px 0 #c43e00; transition:0.25s; }
+    button:hover { background:#ff6b1a; transform:translateY(4px); box-shadow:0 4px 0 #b33a00; }
+    .msg { padding:12px; border-radius:12px; margin:15px 0; text-align:center; }
+    .success { background:#00a676; color:white; }
+    .error { background:white; color:#ff4e00; }
+    .links { text-align:center; margin-top:24px; color:var(--text); }
+    .links a { color:white; text-decoration:underline; }
+    .right { width:50%; background:linear-gradient(135deg,#ffb84d,#ff9a00); display:flex; align-items:center; justify-content:center; padding:40px; }
+    .icons-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:36px; max-width:600px; }
+    .icon { width:110px; height:110px; background:white; border-radius:28px; overflow:hidden; box-shadow:0 12px 30px rgba(0,0,0,0.2); animation:float 6s ease-in-out infinite; }
+    .icon:hover { transform:translateY(-20px) scale(1.15) rotate(6deg); }
+    .icon img { width:100%; height:100%; object-fit:contain; padding:14px; }
+    @keyframes float { 0%,100% {transform:translateY(0)} 50% {transform:translateY(-16px)} }
+    @media (max-width:1024px) {.left,.right{width:100%}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="left">
+      <h1>Sign Up</h1>
+      <p>Create your Foodit account!</p>
+      <div class="form-box">
+        <div id="msg" class="msg" style="display:none;"></div>
+        <input type="text" id="username" placeholder="Username" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <button onclick="signup()">Create Account</button>
+        <div class="links">
+          Already have one? <a href="login.html">Log in</a><br>
+          <a href="index.html">Back home</a>
+        </div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="icons-grid">
+        <div class="icon"><img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Fthumbnails_Strawberry%20Milk.png?1750440367893" loading="lazy"></div>
+        <div class="icon"><img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Fthumbnails_Warriet%20Milk.png?1750440415086" loading="lazy"></div>
+        <div class="icon"><img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Fmoon.png?1750451519920" loading="lazy"></div>
+        <div class="icon"><img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Fastronaut.png?1750451907761" loading="lazy"></div>
+        <div class="icon"><img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Fdonut.png" loading="lazy"></div>
+        <div class="icon"><img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Ficecream.png" loading="lazy"></div>
+        <div class="icon"><img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Fsandwich.png" loading="lazy"></div>
+        <div class="icon"><img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Ftaco.png" loading="lazy"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCVJcIFnKgG75EpTmbIvg-zeypVbU03I3g",
+      authDomain: "foodit-chat.firebaseapp.com",
+      projectId: "foodit-chat",
+      storageBucket: "foodit-chat.appspot.com",
+      messagingSenderId: "798551611055",
+      appId: "1:798551611055:web:c896f152ae356d2b39665a"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    function signup() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
+      const msg = document.getElementById("msg");
+
+      if (username.length < 3) return showMsg("Username too short", "error");
+      if (password.length < 6) return showMsg("Password 6+ chars", "error");
+
+      // Check if username exists
+      db.collection("users").where("username", "==", username.toLowerCase()).get()
+        .then(snapshot => {
+          if (!snapshot.empty) {
+            showMsg("Username taken", "error");
+          } else {
+            db.collection("users").add({
+              username: username.toLowerCase(),
+              displayName: username,
+              password: password,
+              createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then(() => {
+              showMsg("Account created! Redirecting...", "success");
+              setTimeout(() => window.location.href = "login.html", 1500);
+            });
+          }
+        });
+    }
+
+    function showMsg(text, type) {
+      const msg = document.getElementById("msg");
+      msg.textContent = text;
+      msg.className = type === "success" ? "msg success" : "msg error";
+      msg.style.display = "block";
+    }
+  </script>
+</body>
+</html>
