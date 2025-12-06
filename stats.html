@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Stats • Foodit</title>
+  <link href="https://fonts.googleapis.com/css2?family=Titan+One&family=Mountains+of+Christmas:wght@700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
+  <link rel="icon" href="https://i.postimg.cc/DwTNfscc/foodit-Logo.png"/>
+  <style>
+    :root {
+      --orange: #ff4444;
+      --gold: #FFD700;
+      --snow: #fffefc;
+      --green: #0a8c42;
+      --darkgreen: #065f2e;
+      --shadow: rgba(0,0,0,0.25);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Titan One', cursive;
+      background: linear-gradient(135deg, #0f2b3d, #1a1a2e);
+      color: white;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Snowfall Background */
+    .snow { 
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="20" cy="20" r="3" fill="white" opacity="0.8"/><circle cx="80" cy="40" r="2" fill="white" opacity="0.6"/><circle cx="50" cy="70" r="2.5" fill="white" opacity="0.7"/></svg>');
+      background-size: 50px 50px;
+      animation: snow 20s linear infinite;
+    }
+    @keyframes snow { from { background-position: 0 0; } to { background-position: 0 1000px; } }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed; left: 0; top: 0; width: 260px; height: 100vh;
+      background: linear-gradient(to bottom, #c41e3a, #8b0000);
+      padding: 30px 20px; color: white; z-index: 1000;
+      box-shadow: 10px 0 30px var(--shadow);
+      transition: transform 0.4s ease;
+    }
+    .sidebar h1 {
+      font-size: 48px; text-align: center; margin-bottom: 40px;
+      text-shadow: 0 0 15px #ff6b35;
+    }
+    .sidebar a {
+      display: flex; align-items: center; gap: 15px;
+      padding: 16px 20px; margin: 8px 0;
+      border-radius: 16px; font-size: 20px;
+      color: white; text-decoration: none;
+      transition: all 0.3s;
+    }
+    .sidebar a:hover { background: rgba(255,255,255,0.2); transform: translateX(10px); }
+    .sidebar a.active { background: #ff6b35; box-shadow: 0 0 20px #ff6b35; }
+
+    /* Main Content */
+    .main {
+      margin-left: 260px; padding: 60px 40px; min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .title {
+      font-family: 'Mountains of Christmas', cursive;
+      font-size: 90px; color: #ff6b35;
+      text-shadow: 0 0 20px #ff6b35, 0 0 40px #c41e3a;
+      margin-bottom: 30px;
+    }
+
+    /* Stats Card */
+    .stats-card {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(20px);
+      border-radius: 30px;
+      padding: 40px;
+      width: 100%; max-width: 560px;
+      text-align: center;
+      box-shadow: 0 20px 50px var(--shadow);
+      border: 2px solid rgba(255,107,53,0.4);
+    }
+    #profile-pic {
+      width: 160px; height: 160px; border-radius: 50%;
+      border: 8px solid #ff6b35; box-shadow: 0 0 30px #ff6b35;
+      object-fit: cover;
+    }
+    #username-display {
+      font-size: 42px; margin: 20px 0;
+      background: linear-gradient(to right, #ff6b35, #FFD700, #ff6b35);
+      -webkit-background-clip: text; color: transparent;
+    }
+    #badge-container { margin: 15px 0; display: flex; gap: 12px; justify-content: center; }
+    .badge { width: 50px; height: 50px; border-radius: 12px; }
+
+    .stat-line {
+      font-size: 28px; margin: 20px 0;
+      background: linear-gradient(to right, #00d9e6, #8de2ff);
+      -webkit-background-clip: text; color: transparent;
+    }
+
+    /* Extra Stats */
+    .extra-stats {
+      display: flex; gap: 30px; margin: 50px 0; flex-wrap: wrap; justify-content: center;
+    }
+    .extra-box {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(15px);
+      padding: 30px; border-radius: 25px;
+      width: 220px; text-align: center;
+      box-shadow: 0 15px 40px var(--shadow);
+      transition: transform 0.3s;
+    }
+    .extra-box:hover { transform: translateY(-15px); }
+    .count { font-size: 50px; color: #FFD700; text-shadow: 0 0 15px gold; }
+    .label { font-size: 20px; margin-top: 10px; color: #8de2ff; }
+
+    /* Claim Button */
+    #claim-btn {
+      background: linear-gradient(45deg, #ff6b35, #c41e3a);
+      color: white; border: none; padding: 20px 60px;
+      font-size: 28px; border-radius: 50px; cursor: pointer;
+      box-shadow: 0 15px 30px rgba(196,30,58,0.4);
+      margin: 40px 0;
+    }
+    #claim-btn:hover { transform: scale(1.1); }
+
+    /* News & Falling Blooks */
+    .falling-blooks { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+    .blook { position: absolute; width: 60px; animation: fall linear infinite; }
+    @keyframes fall { from { transform: translateY(-100px) rotate(0deg); } to { transform: translateY(110vh) rotate(360deg); } }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .main { margin-left: 0; }
+      .hamburger { display: block !important; }
+    }
+    .hamburger { display: none; position: fixed; top: 20px; left: 20px; font-size: 40px; background: none; border: none; color: white; z-index: 9999; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <div class="snow"></div>
+  <button class="hamburger" id="hamburger">Menu</button>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <h1>FOODIT</h1>
+    <a href="#" class="active"><i class="fas fa-chart-line"></i> Stats</a>
+    <a href="market.html"><i class="fas fa-store"></i> Market</a>
+    <a href="foods.html"><i class="fas fa-utensils"></i> Foods</a>
+    <a href="chat.html"><i class="fas fa-comment"></i> Chat</a>
+    <a href="settings.html"><i class="fas fa-gear"></i> Settings</a>
+    <a href="#" id="news-link"><i class="fas fa-newspaper"></i> News</a>
+    <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <h1 class="title">Your Stats</h1>
+
+    <div class="stats-card">
+      <img id="profile-pic" src="https://fooditgame.glitch.me/images/default.png" alt="Profile">
+      <div id="username-display">Loading...</div>
+      <div id="badge-container"></div>
+      <div class="stat-line">Level: <span id="level-display">0</span></div>
+      <div class="stat-line">Tokens: <span id="token-display">0</span></div>
+      <button id="claim-btn">Claim Daily Tokens</button>
+    </div>
+
+    <div class="extra-stats">
+      <div class="extra-box">
+        <div class="count" id="foods-unlocked-count">0</div>
+        <div class="label">Foods Unlocked</div>
+      </div>
+      <div class="extra-box">
+        <div class="count" id="packs-opened-count">0</div>
+        <div class="label">Packs Opened</div>
+      </div>
+      <div class="extra-box">
+        <div class="count" id="messages-sent-count">0</div>
+        <div class="label">Messages Sent</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Falling Blooks -->
+  <div class="falling-blooks" id="falling-blooks"></div>
+
+  <script>
+    const currentUser = localStorage.getItem("foodit_user");
+    if (!currentUser) { alert("Please log in!"); location.href = "login.html"; }
+
+    const users = JSON.parse(localStorage.getItem("foodit_users") || "{}");
+    const userData = users[currentUser] || { level:0, tokens:0, blooks:[], packsOpened:0, messagesSent:0, profilePicture:"https://fooditgame.glitch.me/images/default.png" };
+
+    document.getElementById("username-display").textContent = currentUser;
+    document.getElementById("profile-pic").src = userData.profilePicture;
+    document.getElementById("level-display").textContent = userData.level || 0;
+    document.getElementById("token-display").textContent = userData.tokens || 0;
+    document.getElementById("foods-unlocked-count").textContent = userData.blooks?.length || 0;
+    document.getElementById("packs-opened-count").textContent = userData.packsOpened || 0;
+    document.getElementById("messages-sent-count").textContent = userData.messagesSent || 0;
+
+    // Badges (same logic as before)
+    const badgeContainer = document.getElementById("badge-container");
+    const badges = { member:"https://i.postimg.cc/dDzGXLVX/Member.webp", owner:"https://i.postimg.cc/YC9VBVqz/owner.webp" /* add more */ };
+    const img = document.createElement("img");
+    img.src = badges.member; img.className = "badge"; img.title = "Member";
+    badgeContainer.appendChild(img);
+
+    // Falling holiday blooks
+    const blooks = ["Holiday-Cat-1.png","Holiday-Frog-1.png","Golden-Hot-Chocolate-1.png","Evil-Snowman-1.png"];
+    setInterval(() => {
+      const b = document.createElement("img");
+      b.src = "https://i.postimg.cc/" + blooks[Math.floor(Math.random()*blooks.length)].split("-")[1] + "/" + blooks[Math.floor(Math.random()*blooks.length)];
+      b.className = "blook";
+      b.style.left = Math.random() * 100 + "%";
+      b.style.animationDuration = 6 + Math.random() * 6 + "s";
+      document.getElementById("falling-blooks").appendChild(b);
+      setTimeout(() => b.remove(), 15000);
+    }, 800);
+
+    // Hamburger
+    document.getElementById("hamburger").onclick = () => document.getElementById("sidebar").classList.toggle("open");
+
+    function logout() {
+      localStorage.removeItem("foodit_user");
+      location.href = "index.html";
+    }
+  </script>
+</body>
+</html>
