@@ -19,6 +19,7 @@
     .msg { padding:14px; border-radius:12px; margin:15px 0; text-align:center; font-size:17px; display:none; }
     .success { background:#00a676; color:white; }
     .error { background:white; color:#ff4e00; }
+    .links { text-align:center; margin-top:24px; color:var(--text); font-size:15px; }
     .links a { color:white; text-decoration:underline; font-weight:bold; }
     .right { width:50%; background:linear-gradient(135deg,#ffb84d,#ff9a00); display:flex; align-items:center; justify-content:center; padding:40px; }
     .icons-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:36px; max-width:600px; }
@@ -37,8 +38,8 @@
         <div id="msg" class="msg"></div>
         <input type="text" id="username" placeholder="Username" maxlength="20" required />
         <input type="password" id="password" placeholder="Password" required />
-        <button onclick="register()">Register</button>
-        <div style="margin-top:24px;text-align:center;color:var(--text);font-size:15px;">
+        <button onclick="signup()">Sign Up</button>
+        <div class="links">
           Already have one? <a href="login.html">Log in</a><br>
           <a href="index.html">Back home</a>
         </div>
@@ -58,23 +59,54 @@
     </div>
   </div>
 
-  <script>
-    const users = JSON.parse(localStorage.getItem("foodit_users") || "{}");
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getDatabase, ref, get, set, child } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
-    function register() {
+    const firebaseConfig = {
+      apiKey: "AIzaSyCVJcIFnKgG75EpTmbIvg-zeypVbU03I3g",
+      authDomain: "foodit-chat.firebaseapp.com",
+      databaseURL: "https://foodit-chat-default-rtdb.firebaseio.com",
+      projectId: "foodit-chat",
+      storageBucket: "foodit-chat.appspot.com",
+      messagingSenderId: "798551611055",
+      appId: "1:798551611055:web:c896f152ae356d2b39665a"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    window.signup = async function() {
       const username = document.getElementById("username").value.trim();
       const password = document.getElementById("password").value;
       const msg = document.getElementById("msg");
 
-      if (!username || !password) return show("Fill all fields", "error");
-      if (users[username]) return show("Username taken", "error");
+      if (!username || !password) return show("Fill in all fields", "error");
+      if (username.includes("/")) return show("No / in username", "error");
 
-      users[username] = password;
-      localStorage.setItem("foodit_users", JSON.stringify(users));
-      localStorage.setItem("foodit_user", username);
-      show("Success! Logging in...", "success");
-      setTimeout(() => location.href = "dashboard.html", 1000);
-    }
+      try {
+        const snap = await get(child(ref(db), `users/${username}`));
+        if (snap.exists()) return show("Username taken", "error");
+
+        await set(ref(db, `users/${username}`), {
+          password: password,  // plain text (as requested)
+          profilePicture: "https://fooditgame.glitch.me/images/default.png",
+          blooks: [],
+          packsOpened: 0,
+          messagesSent: 0,
+          tokens: 0,
+          level: 0,
+          lastSpin: null,
+          tradeRequests: {}
+        });
+
+        localStorage.setItem("fooditCurrentUser", username);
+        show("Success! Logging in...", "success");
+        setTimeout(() => location.href = "dashboard.html", 1000);
+      } catch (e) {
+        show("Error: " + e.message, "error");
+      }
+    };
 
     function show(text, type) {
       const m = document.getElementById("msg");
