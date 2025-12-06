@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Foodit • First Food Private Server</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Titan+One&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+
+  <style>
+    :root {
+      --orange: #ff6a00;
+      --dark-orange: #e55a00;
+      --green: #00a676;
+      --light-bg: #fff8f0;
+      --text-light: #ffeacc;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Titan One', cursive;
+      background: var(--light-bg);
+      min-height: 100vh;
+      display: flex;
+      flex-wrap: wrap;
+      overflow-x: hidden;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      width: 100%;
+      min-height: 100vh;
+    }
+
+    /* LEFT SIDE */
+    .left {
+      width: 50%;
+      padding: 80px 70px;
+      background: linear-gradient(135deg, #ff7f11, #ffae00);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    }
+
+    .left h1 {
+      font-size: 78px;
+      line-height: 0.95;
+      margin: 0;
+      text-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+    }
+
+    .left h1:nth-of-type(2) {
+      font-size: 56px;
+      margin-top: -12px;
+      opacity: 0.95;
+    }
+
+    .left p {
+      font-size: 20px;
+      line-height: 1.6;
+      max-width: 540px;
+      margin: 28px 0 44px;
+      color: var(--text-light);
+    }
+
+    .buttons {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 18px 36px;
+      font-size: 20px;
+      font-family: inherit;
+      border: none;
+      border-radius: 18px;
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 8px 0 #c43e00;
+      transition: all 0.25s ease;
+      position: relative;
+      top: 0;
+    }
+
+    .btn-primary {
+      background: #ff4e00;
+    }
+
+    .btn-primary:hover {
+      background: #ff6b1a;
+      top: 4px;
+      box-shadow: 0 4px 0 #b33a00;
+    }
+
+    .btn-discord {
+      background: var(--green);
+      box-shadow: 0 8px 0 #006647;
+    }
+
+    .btn-discord:hover {
+      background: #00c893;
+      top: 4px;
+      box-shadow: 0 4px 0 #005233;
+    }
+
+    .pronounce {
+      margin-top: 36px;
+      font-size: 16px;
+      color: var(--text-light);
+      opacity: 0.9;
+    }
+
+    .footer-note {
+      margin-top: auto;
+      padding-top: 80px;
+      font-size: 14px;
+      color: var(--text-light);
+      opacity: 0.8;
+      line-height: 1.5;
+    }
+
+    /* RIGHT SIDE - ICONS */
+    .right {
+      width: 50%;
+      background: linear-gradient(135deg, #ffb84d, #ff9a00);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .icons-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 36px;
+      max-width: 600px;
+    }
+
+    .icon {
+      width: 110px;
+      height: 110px;
+      background: white;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .icon:hover {
+      transform: translateY(-20px) scale(1.15) rotate(6deg) !important;
+      box-shadow: 0 30px 50px rgba(0,0,0,0.3);
+      z-index: 10;
+    }
+
+    .icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 14px;
+    }
+
+    /* Floating delays */
+    .icon:nth-child(1) { animation-delay: 0s; }
+    .icon:nth-child(2) { animation-delay: 0.9s; }
+    .icon:nth-child(3) { animation-delay: 1.8s; }
+    .icon:nth-child(4) { animation-delay: 2.7s; }
+    .icon:nth-child(5) { animation-delay: 0.5s; }
+    .icon:nth-child(6) { animation-delay: 1.4s; }
+    .icon:nth-child(7) { animation-delay: 2.3s; }
+    .icon:nth-child(8) { animation-delay: 3.2s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50%      { transform: translateY(-16px) rotate(3deg); }
+    }
+
+    /* Version footer */
+    .version {
+      position: absolute;
+      bottom: 24px;
+      right: 32px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .version a {
+      color: rgba(255,255,255,0.95);
+      text-decoration: underline;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1024px) {
+      .left, .right { width: 100%; padding: 60px 50px; }
+      .left h1 { font-size: 64px; }
+      .left h1:nth-of-type(2) { font-size: 48px; }
+      .icons-grid { grid-template-columns: repeat(3, 1fr); gap: 30px; }
+      .icon { width: 100px; height: 100px; }
+    }
+
+    @media (max-width: 640px) {
+      .left {
+        padding: 70px 30px;
+        text-align: center;
+      }
+      .left h1 { font-size: 52px; }
+      .left h1:nth-of-type(2) { font-size: 42px; }
+      .buttons { flex-direction: column; align-items: center; }
+      .btn { width: 100%; max-width: 320px; }
+      .icons-grid { gap: 20px; }
+      .icon { width: 86px; height: 86px; border-radius: 22px; }
+      .version { position: static; text-align: center; margin-top: 40px; padding: 20px; }
+    }
+
+    @media (max-width: 420px) {
+      .left h1 { font-size: 46px; }
+      .left h1:nth-of-type(2) { font-size: 38px; }
+      .left p { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- LEFT SIDE -->
+    <div class="left">
+      <h1>Foodit</h1>
+      <h1>First Food Private Server</h1>
+      <p>The first ever open-source Foodit platform — built from the ground up by Blooket Warrior with pure HTML, CSS, and JavaScript. Unlimited fun, zero restrictions.</p>
+
+      <div class="buttons">
+        <a href="https://foodit-game.vercel.app/signup.html" class="btn btn-primary">Signup</a>
+        <a href="/login.html" class="btn btn-primary">Login</a>
+        <a href="https://discord.gg/rfHHYjhA3H" class="btn btn-discord" target="_blank">
+          Join Discord
+        </a>
+        <a href="https://foodit-game.vercel.app/credits.html" class="btn btn-primary">Credits</a>
+      </div>
+
+      <div class="pronounce">Pronounced "Food-it"</div>
+
+      <div class="footer-note">
+        Not affiliated with Blooket.<br>
+        Foodit © 2025 • All Rights Reserved.
+      </div>
+    </div>
+
+    <!-- RIGHT SIDE - ICONS -->
+    <div class="right">
+      <div class="icons-grid">
+        <div class="icon">
+          <img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Fthumbnails_Strawberry%20Milk.png?1750440367893" alt="Strawberry Milk" loading="lazy">
+        </div>
+        <div class="icon">
+          <img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Fthumbnails_Warriet%20Milk.png?1750440415086" alt="Warriet Milk" loading="lazy">
+        </div>
+        <div class="icon">
+          <img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Fmoon.png?1750451519920" alt="Moon" loading="lazy">
+        </div>
+        <div class="icon">
+          <img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Fastronaut.png?1750451907761" alt="Astronaut" loading="lazy">
+        </div>
+        <div class="icon">
+          <img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Fdonut.png" alt="Donut" loading="lazy">
+        </div>
+        <div class="icon">
+          <img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Ficecream.png" alt="Ice Cream" loading="lazy">
+        </div>
+        <div class="icon">
+          <img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Fsandwich.png" alt="Sandwich" loading="lazy">
+        </div>
+        <div class="icon">
+          <img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Ftaco.png" alt="Taco" loading="lazy">
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Version -->
+  <div class="version">
+    Running Foodit v1.2.0<br>
+    <a href="#">Terms of Service</a>
+  </div>
+
+</body>
+</html>
