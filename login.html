@@ -1,106 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login • Foodit</title>
-  <link href="https://fonts.googleapis.com/css2?family=Titan+One&display=swap" rel="stylesheet"/>
-  <style>
-    /* Copy the full <style> block from signup.html above */
-    :root { --orange:#ff6a00; --light:#fff8f0; --text:#ffeacc; }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:'Titan One',cursive; background:var(--light); min-height:100vh; display:flex; flex-wrap:wrap; }
-    .container { display:flex; flex-wrap:wrap; width:100%; min-height:100vh; }
-    .left { width:50%; padding:80px 70px; background:linear-gradient(135deg,#ff7f11,#ffae00); color:white; display:flex; flex-direction:column; justify-content:center; }
-    .left h1 { font-size:78px; line-height:0.95; text-shadow:4px 4px 0 rgba(0,0,0,0.2); }
-    .form-box { background:rgba(255,255,255,0.18); backdrop-filter:blur(12px); padding:40px; border-radius:24px; box-shadow:0 15px 35px rgba(0,0,0,0.2); max-width:420px; }
-    input { width:100%; padding:16px 20px; margin:12px 0; border:none; border-radius:16px; font-size:18px; background:white; }
-    button { width:100%; padding:18px; margin-top:20px; background:#ff4e00; color:white; border:none; border-radius:18px; font-size:22px; cursor:pointer; box-shadow:0 8px 0 #c43e00; transition:0.25s; }
-    button:hover { background:#ff6b1a; transform:translateY(4px); box-shadow:0 4px 0 #b33a00; }
-    .error { background:white; color:#ff4e00; padding:14px; border-radius:12px; margin:15px 0; text-align:center; display:none; }
-    .links { text-align:center; margin-top:24px; color:var(--text); }
-    .links a { color:white; text-decoration:underline; font-weight:bold; }
-    .right { width:50%; background:linear-gradient(135deg,#ffb84d,#ff9a00); display:flex; align-items:center; justify-content:center; padding:40px; }
-    .icons-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:36px; max-width:600px; }
-    .icon { width:110px; height:110px; background:white; border-radius:28px; overflow:hidden; box-shadow:0 12px 30px rgba(0,0,0,0.2); animation:float 6s ease-in-out infinite; }
-    .icon:hover { transform:translateY(-20px) scale(1.15) rotate(6deg); }
-    .icon img { width:100%; height:100%; object-fit:contain; padding:14px; }
-    @keyframes float { 0%,100% {transform:translateY(0)} 50% {transform:translateY(-16px) rotate(3deg)} }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="left">
-      <h1>Foodit Login</h1>
-      <p>Welcome back!</p>
-      <div class="form-box">
-        <div id="error" class="error"></div>
-        <input type="text" id="username" placeholder="Username" required />
-        <input type="password" id="password" placeholder="Password" required />
-        <button onclick="login()">Log In</button>
-        <div class="links">
-          No account? <a href="signup.html">Sign up</a><br>
-          <a href="index.html">Back home</a>
-        </div>
-      </div>
-    </div>
-    <div class="right">
-      <div class="icons-grid">
-        <div class="icon"><img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Fthumbnails_Strawberry%20Milk.png?1750440367893" loading="lazy"></div>
-        <div class="icon"><img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Fthumbnails_Warriet%20Milk.png?1750440415086" loading="lazy"></div>
-        <div class="icon"><img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Fmoon.png?1750451519920" loading="lazy"></div>
-        <div class="icon"><img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Fastronaut.png?1750451907761" loading="lazy"></div>
-        <div class="icon"><img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Fdonut.png" loading="lazy"></div>
-        <div class="icon"><img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Ficecream.png" loading="lazy"></div>
-        <div class="icon"><img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Fsandwich.png" loading="lazy"></div>
-        <div class="icon"><img src="https://cdn.glitch.global/36ec2602-304b-444b-8f2f-08c65c92bbc0/thumbnails%2Ftaco.png" loading="lazy"></div>
-      </div>
-    </div>
-  </div>
+<!-- Same design as register.html, just change: -->
+<h1>Foodit Login</h1>
+<p>Welcome back!</p>
+<button onclick="login()">Log In</button>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+<script>
+  const users = JSON.parse(localStorage.getItem("foodit_users") || "{}");
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCVJcIFnKgG75EpTmbIvg-zeypVbU03I3g",
-      authDomain: "foodit-chat.firebaseapp.com",
-      databaseURL: "https://foodit-chat-default-rtdb.firebaseio.com",
-      projectId: "foodit-chat",
-      storageBucket: "foodit-chat.appspot.com",
-      messagingSenderId: "798551611055",
-      appId: "1:798551611055:web:c896f152ae356d2b39665a"
-    };
+  function login() {
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value;
+    const msg = document.getElementById("msg");
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+    if (!username || !password) return show("Fill all fields", "error");
+    if (users[username] !== password) return show("Wrong username/password", "error");
 
-    window.login = async function() {
-      const username = document.getElementById("username").value.trim();
-      const password = document.getElementById("password").value;
-      const error = document.getElementById("error");
+    localStorage.setItem("foodit_user", username);
+    location.href = "dashboard.html";
+  }
 
-      if (!username || !password) return showError("Fill in all fields");
-
-      try {
-        const snap = await get(child(ref(db), `users/${username}`));
-        if (!snap.exists()) return showError("User not found");
-        if (snap.val().password === password) {
-          localStorage.setItem("fooditCurrentUser", username);
-          location.href = "dashboard.html";
-        } else {
-          showError("Wrong password");
-        }
-      } catch (e) {
-        showError("Error: " + e.message);
-      }
-    };
-
-    function showError(msg) {
-      const e = document.getElementById("error");
-      e.textContent = msg;
-      e.style.display = "block";
-    }
-  </script>
-</body>
-</html>
+  function show(text, type) {
+    const m = document.getElementById("msg");
+    m.textContent = text;
+    m.className = "msg " + type;
+    m.style.display = "block";
+  }
+</script>
