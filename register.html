@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Signup • Foodit</title>
   <link href="https://fonts.googleapis.com/css2?family=Titan+One&display=swap" rel="stylesheet"/>
-  <link rel="icon" type="image/png" href="https://i.postimg.cc/DwTNfscc/foodit-Logo.png">
-
   <style>
     :root { --orange:#ff6a00; --light:#fff8f0; --text:#ffeacc; }
     * { margin:0; padding:0; box-sizing:border-box; }
@@ -16,10 +14,11 @@
     .left h1 { font-size:78px; line-height:0.95; text-shadow:4px 4px 0 rgba(0,0,0,0.2); }
     .form-box { background:rgba(255,255,255,0.18); backdrop-filter:blur(12px); padding:40px; border-radius:24px; box-shadow:0 15px 35px rgba(0,0,0,0.2); max-width:420px; width:100%; }
     input { width:100%; padding:16px 20px; margin:12px 0; border:none; border-radius:16px; font-size:18px; background:white; color:#333; }
-    input:focus { outline:none; transform:scale(1.02); box-shadow:0 0 0 4px rgba(255,255,255,0.4); }
-    button { width:100%; padding:18px; margin-top:20px; background:#ff4e00; color:white; border:none; border-radius:18px; font-size:22px; cursor:pointer; box-shadow:0 8px 0 #c43e00; transition:0.25s; position:relative; top:0; }
-    button:hover { background:#ff6b1a; top:4px; box-shadow:0 4px 0 #b33a00; }
-    .error { background:white; color:#ff4e00; padding:14px; border-radius:12px; margin:15px 0; text-align:center; font-size:17px; display:none; }
+    button { width:100%; padding:18px; margin-top:20px; background:#ff4e00; color:white; border:none; border-radius:18px; font-size:22px; cursor:pointer; box-shadow:0 8px 0 #c43e00; transition:0.25s; }
+    button:hover { background:#ff6b1a; transform:translateY(4px); box-shadow:0 4px 0 #b33a00; }
+    .msg { padding:14px; border-radius:12px; margin:15px 0; text-align:center; font-size:17px; display:none; }
+    .success { background:#00a676; color:white; }
+    .error { background:white; color:#ff4e00; }
     .links { text-align:center; margin-top:24px; color:var(--text); font-size:15px; }
     .links a { color:white; text-decoration:underline; font-weight:bold; }
     .right { width:50%; background:linear-gradient(135deg,#ffb84d,#ff9a00); display:flex; align-items:center; justify-content:center; padding:40px; }
@@ -28,7 +27,6 @@
     .icon:hover { transform:translateY(-20px) scale(1.15) rotate(6deg); }
     .icon img { width:100%; height:100%; object-fit:contain; padding:14px; }
     @keyframes float { 0%,100% {transform:translateY(0)} 50% {transform:translateY(-16px) rotate(3deg)} }
-    @media (max-width:1024px) {.left,.right{width:100%} .icons-grid{grid-template-columns:repeat(3,1fr)}}
   </style>
 </head>
 <body>
@@ -37,13 +35,13 @@
       <h1>Foodit Signup</h1>
       <p>Create your account!</p>
       <div class="form-box">
-        <div id="error" class="error"></div>
+        <div id="msg" class="msg"></div>
         <input type="text" id="username" placeholder="Username" maxlength="20" required />
         <input type="password" id="password" placeholder="Password" required />
         <button onclick="signup()">Sign Up</button>
         <div class="links">
-          Already have an account? <a href="login.html">Log in</a><br>
-          <a href="index.html">Back to home</a>
+          Already have one? <a href="login.html">Log in</a><br>
+          <a href="index.html">Back home</a>
         </div>
       </div>
     </div>
@@ -63,7 +61,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getDatabase, ref, get, child, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+    import { getDatabase, ref, get, set, child } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCVJcIFnKgG75EpTmbIvg-zeypVbU03I3g",
@@ -78,28 +76,20 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    async function hashPassword(password) {
-      const msgUint8 = new TextEncoder().encode(password);
-      const hashBuffer = await crypto.subtle.digest("SHA-256", msgUint8);
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
-    }
-
     window.signup = async function() {
       const username = document.getElementById("username").value.trim();
       const password = document.getElementById("password").value;
-      const error = document.getElementById("error");
+      const msg = document.getElementById("msg");
 
-      if (!username || !password) return showError("Fill in all fields");
-      if (username.includes("/")) return showError("Username can't contain /");
+      if (!username || !password) return show("Fill in all fields", "error");
+      if (username.includes("/")) return show("No / in username", "error");
 
       try {
         const snap = await get(child(ref(db), `users/${username}`));
-        if (snap.exists()) return showError("Username taken");
+        if (snap.exists()) return show("Username taken", "error");
 
-        const hashed = await hashPassword(password);
         await set(ref(db, `users/${username}`), {
-          password: hashed,
+          password: password,  // plain text (as requested)
           profilePicture: "https://fooditgame.glitch.me/images/default.png",
           blooks: [],
           packsOpened: 0,
@@ -111,19 +101,18 @@
         });
 
         localStorage.setItem("fooditCurrentUser", username);
-        showError("Success! Redirecting...", false);
+        show("Success! Logging in...", "success");
         setTimeout(() => location.href = "dashboard.html", 1000);
       } catch (e) {
-        showError("Error: " + e.message);
+        show("Error: " + e.message, "error");
       }
     };
 
-    function showError(msg, isError = true) {
-      const el = document.getElementById("error");
-      el.textContent = msg;
-      el.style.display = "block";
-      el.style.background = isError ? "white" : "#00a676";
-      el.style.color = isError ? "#ff4e00" : "white";
+    function show(text, type) {
+      const m = document.getElementById("msg");
+      m.textContent = text;
+      m.className = "msg " + type;
+      m.style.display = "block";
     }
   </script>
 </body>
