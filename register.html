@@ -12,7 +12,6 @@
     .container { display:flex; flex-wrap:wrap; width:100%; min-height:100vh; }
     .left { width:50%; padding:80px 70px; background:linear-gradient(135deg,#ff7f11,#ffae00); color:white; display:flex; flex-direction:column; justify-content:center; }
     .left h1 { font-size:78px; line-height:0.95; text-shadow:4px 4px 0 rgba(0,0,0,0.2); }
-    .left p { font-size:20px; margin:32px 0 48px; color:var(--text); max-width:540px; }
     .form-box { background:rgba(255,255,255,0.18); backdrop-filter:blur(12px); padding:40px; border-radius:24px; box-shadow:0 15px 35px rgba(0,0,0,0.2); max-width:420px; width:100%; }
     input { width:100%; padding:16px 20px; margin:12px 0; border:none; border-radius:16px; font-size:18px; background:white; color:#333; }
     input:focus { outline:none; transform:scale(1.02); box-shadow:0 0 0 4px rgba(255,255,255,0.4); }
@@ -29,7 +28,6 @@
     .icon:hover { transform:translateY(-20px) scale(1.15) rotate(6deg); }
     .icon img { width:100%; height:100%; object-fit:contain; padding:14px; }
     @keyframes float { 0%,100% {transform:translateY(0)} 50% {transform:translateY(-16px) rotate(3deg)} }
-    @media (max-width:1024px) {.left,.right{width:100%;padding:60px 50px} .icons-grid{grid-template-columns:repeat(3,1fr)}}
   </style>
 </head>
 <body>
@@ -40,7 +38,7 @@
       <div class="form-box">
         <div id="msg" class="msg"></div>
         <input type="text" id="username" placeholder="Username" maxlength="20" required />
-        <input type="password" id="password" placeholder="Password" required />
+        <input type="password" id="password" placeholder="Password (any length)" required />
         <button onclick="signup()">Sign Up</button>
         <div class="links">
           Already have one? <a href="login.html">Log in</a><br>
@@ -69,8 +67,7 @@
       const msg = document.getElementById("msg");
 
       if (!username || !password) return show("Fill all fields", "error");
-      if (username.length < 3) return show("Username too short", "error");
-      if (password.length < 6) return show("Password 6+ chars", "error");
+      if (username.length < 1) return show("Username too short", "error");
 
       try {
         const res = await fetch("/api/signup", {
@@ -82,7 +79,7 @@
 
         const data = await res.json();
         if (data.success) {
-          show("Account created! Redirecting...", "success");
+          show("Account created! Logging in...", "success");
           setTimeout(() => location.href = "dashboard.html", 1200);
         } else {
           show(data.error || "Signup failed", "error");
