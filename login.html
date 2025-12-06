@@ -6,42 +6,35 @@
   <title>Login • Foodit</title>
   <link href="https://fonts.googleapis.com/css2?family=Titan+One&display=swap" rel="stylesheet"/>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
   <style>
     :root { --orange:#ff6a00; --light:#fff8f0; --text:#ffeacc; }
     * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:'Titan One',cursive; background:var(--light); min-height:100vh; display:flex; flex-wrap:wrap; overflow-x:hidden; }
+    body { font-family:'Titan One',cursive; background:var(--light); min-height:100vh; display:flex; flex-wrap:wrap; }
     .container { display:flex; flex-wrap:wrap; width:100%; min-height:100vh; }
-    .left { width:50%; padding:80px 70px; background:linear-gradient(135deg,#ff7f11,#ffae00); color:white; display:flex; flex-direction:column; justify-content:center; position:relative; }
-    .left h1 { font-size:78px; line-height:0.95; text-shadow:4px 4px 0 rgba(0,0,0,0.2); margin:0; }
-    .left p { font-size:20px; margin:32px 0 48px; color:var(--text); max-width:540px; }
-    .form-box { background:rgba(255,255,255,0.18); backdrop-filter:blur(12px); padding:40px; border-radius:24px; box-shadow:0 15px 35px rgba(0,0,0,0.2); max-width:420px; width:100%; }
-    input { width:100%; padding:16px 20px; margin:12px 0; border:none; border-radius:16px; font-size:18px; font-family:inherit; background:white; color:#333; }
-    input:focus { outline:none; transform:scale(1.02); box-shadow:0 0 0 4px rgba(255,255,255,0.4); }
-    button { width:100%; padding:18px; margin-top:20px; background:#ff4e00; color:white; border:none; border-radius:18px; font-size:22px; cursor:pointer; box-shadow:0 8px 0 #c43e00; transition:0.25s; position:relative; top:0; }
-    button:hover { background:#ff6b1a; top:4px; box-shadow:0 4px 0 #b33a00; }
-    .error { background:white; color:#ff4e00; padding:12px; border-radius:12px; margin:15px 0; text-align:center; }
+    .left { width:50%; padding:80px 70px; background:linear-gradient(135deg,#ff7f11,#ffae00); color:white; display:flex; flex-direction:column; justify-content:center; }
+    .left h1 { font-size:78px; line-height:0.95; text-shadow:4px 4px 0 rgba(0,0,0,0.2); }
+    .form-box { background:rgba(255,255,255,0.18); backdrop-filter:blur(12px); padding:40px; border-radius:24px; box-shadow:0 15px 35px rgba(0,0,0,0.2); max-width:420px; }
+    input { width:100%; padding:16px 20px; margin:12px 0; border:none; border-radius:16px; font-size:18px; background:white; }
+    button { width:100%; padding:18px; margin-top:20px; background:#ff4e00; color:white; border:none; border-radius:18px; font-size:22px; cursor:pointer; box-shadow:0 8px 0 #c43e00; transition:0.25s; }
+    button:hover { background:#ff6b1a; transform:translateY(4px); box-shadow:0 4px 0 #b33a00; }
+    .error { background:white; color:#ff4e00; padding:14px; border-radius:12px; margin:15px 0; text-align:center; }
     .links { text-align:center; margin-top:24px; color:var(--text); }
     .links a { color:white; text-decoration:underline; font-weight:bold; }
     .right { width:50%; background:linear-gradient(135deg,#ffb84d,#ff9a00); display:flex; align-items:center; justify-content:center; padding:40px; }
     .icons-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:36px; max-width:600px; }
--grid }
     .icon { width:110px; height:110px; background:white; border-radius:28px; overflow:hidden; box-shadow:0 12px 30px rgba(0,0,0,0.2); animation:float 6s ease-in-out infinite; }
     .icon:hover { transform:translateY(-20px) scale(1.15) rotate(6deg); }
     .icon img { width:100%; height:100%; object-fit:contain; padding:14px; }
-    .icon:nth-child(1) {animation-delay:0s}   .icon:nth-child(2) {animation-delay:0.9s}
-    .icon:nth-child(3) {animation-delay:1.8s} .icon:nth-child(4) {animation-delay:2.7s}
     @keyframes float { 0%,100% {transform:translateY(0)} 50% {transform:translateY(-16px) rotate(3deg)} }
-    @media (max-width:1024px) {.left,.right{width:100%} .icons-grid{grid-template-columns:repeat(3,1fr)}}
   </style>
 </head>
 <body>
   <div class="container">
     <div class="left">
-      <h1>Login</h1>
-      <p>Welcome back, food fighter!</p>
+      <h1>Welcome Back!</h1>
+      <p>Log in and start munching.</p>
       <div class="form-box">
         <div id="error" class="error" style="display:none;"></div>
         <input type="text" id="username" placeholder="Username" required />
@@ -49,7 +42,7 @@
         <button onclick="login()">Log In</button>
         <div class="links">
           No account? <a href="signup.html">Sign up</a><br>
-          <a href="index.html">Back home</a>
+          <a href="index.html">Back to home</a>
         </div>
       </div>
     </div>
@@ -80,37 +73,33 @@
     const db = firebase.firestore();
 
     function login() {
-      const username = document.getElementById("username").value.trim();
+      const username = document.getElementById("username").value.trim().toLowerCase();
       const password = document.getElementById("password").value;
       const error = document.getElementById("error");
 
-      if (!username || !password) {
-        error.style.display = "block";
-        error.textContent = "Fill in both fields!";
-        return;
-      }
+      if (!username || !password) return showError("Fill in both fields");
 
-      // Find user document by username
-      db.collection("users").where("username", "==", username.toLowerCase()).get()
-        .then(snapshot => {
-          if (snapshot.empty) {
-            error.style.display = "block";
-            error.textContent = "Username not found";
-            return;
-          }
-          const userDoc = snapshot.docs[0].data();
-          if (userDoc.password === password) {
-            localStorage.setItem("foodit_user", JSON.stringify({ username: userDoc.username, uid: snapshot.docs[0].id }));
-            window.location.href = "dashboard.html";
+      db.collection("users").where("username", "==", username).get()
+        .then(snap => {
+          if (snap.empty) return showError("Username not found");
+          const user = snap.docs[0].data();
+          if (user.password === password) {
+            localStorage.setItem("foodit_user", JSON.stringify({
+              username: user.displayName,
+              uid: snap.docs[0].id
+            }));
+            location.href = "dashboard.html";
           } else {
-            error.style.display = "block";
-            error.textContent = "Wrong password";
+            showError("Wrong password");
           }
         })
-        .catch(() => {
-          error.style.display = "block";
-          error.textContent = "Network error";
-        });
+        .catch(() => showError("Network error"));
+    }
+
+    function showError(msg) {
+      const error = document.getElementById("error");
+      error.textContent = msg;
+      error.style.display = "block";
     }
 
     document.addEventListener("keypress", e => e.key === "Enter" && login());
